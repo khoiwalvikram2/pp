@@ -8,20 +8,18 @@ from pdf2image import convert_from_path
 import json
 import os
 
-pytesseract.pytesseract.tesseract_cmd = r'C:\Users\vikram\AppData\Local\Programs\Tesseract-OCR\tesseract.exe'
+#pytesseract.pytesseract.tesseract_cmd = r'C:\Users\vikram\AppData\Local\Programs\Tesseract-OCR\tesseract.exe'
 
 app = Flask(__name__)
 api = Api(app)
 
-UPLOAD_FOLDER = 'uploads/'
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
 class MainApp(Resource):
     def post(self):
         pdf = request.files['pdf']
-        pdf.save(os.path.join(app.config['UPLOAD_FOLDER'], '00.pdf'))
-        
-        images = convert_from_path(app.config['UPLOAD_FOLDER'] + '00.pdf', poppler_path=r'D:\poppler\bin', grayscale=True)
+        pdf.save('00.pdf')
+
+        # images = convert_from_path(app.config['UPLOAD_FOLDER'] + '00.pdf', poppler_path=r'D:\poppler\bin', grayscale=True)
+        images = convert_from_path('00.pdf', grayscale=True)
 
         all_images_path = []
 
@@ -32,7 +30,7 @@ class MainApp(Resource):
 
         matching_data = open('matching_data.json')
         matching_data = json.load(matching_data)
-        before_word_black_list = ['100', '36', '0.77', '4.7', '47', '5.1', '1.9', '143', '10.3', '7', '8', '5.4', '12', '297', '45', '50', '598', '911', '13.5', '5.3', '14.5', '43', '88', '32', '37', '15', '450', '12.9', '60', '48', '13', '5', '2', '8', '6.5', '1.1', '0.6', '0.2', '5.5', '2.9', '7.70']
+        before_word_black_list = ['100', '36', '0.77', '4.7', '47', '5.1', '1.9', '143', '10.3', '7', '8', '5.4', '12', '297', '45', '50', '598', '911', '13.5', '5.3', '14.5', '43', '88', '32', '37', '15', '450', '12.9', '60', '48', '13', '5', '2', '8', '6.5', '1.1', '0.6', '0.2', '5.5', '2.9', '7.70', '0.95', '46', '52', '1.2', '120', '31', '11', '16']
         all_data = []
 
         def has_numbers(inputString):
@@ -61,7 +59,7 @@ class MainApp(Resource):
                         elif after_word == 'D':
                             data = { 'name': 'Vitamin D 25 (OH)', 'value': str(details['text'][index - 2]) + str(details['text'][index - 1]) }
                         all_data.append(data)
-                    
+
                     if word == 'Neutrophils' or word == 'Lymphocytes' or word == 'Monocytes' or word == 'Eosinophils' or word == 'Basophils':
                         after_word = str(details['text'][index + 1])
                         before_word = str(details['text'][index - 2])
@@ -77,7 +75,7 @@ class MainApp(Resource):
                             else:
                                 data = { 'name': word + ' #', 'value': str(details['text'][index - 1]) }
                         all_data.append(data)
-                            
+
                     for match_data in matching_data:
                         if match_data['find'] == word:
                             if word == 'eGFR':
@@ -94,8 +92,8 @@ class MainApp(Resource):
                                     data = { 'name': match_data['name'], 'value': str(details['text'][index - 1]).replace('|', 'l') }
 
                             all_data.append(data)
-            
-        return all_data
+
+        return json.dumps(all_data)
 
 api.add_resource(MainApp, '/')
 
