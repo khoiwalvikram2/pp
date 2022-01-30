@@ -25,7 +25,6 @@ class MainApp(Resource):
 
         for i, image in enumerate(images):
             image_name = '0'+ str(i) +'.jpg';
-            images[i] = images[i][:, 1500:]
             images[i].save(image_name, 'JPEG')
             all_images_path.append(image_name)
         
