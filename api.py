@@ -28,6 +28,11 @@ class MainApp(Resource):
             images[i] = images[i][:, 1500:]
             images[i].save(image_name, 'JPEG')
             all_images_path.append(image_name)
+        
+        for img in all_images_path:
+            image = cv2.imread(img)
+            image = image[:, 550:]
+            cv2.imwrite(img, image)
 
         matching_data = open('matching_data.json')
         matching_data = json.load(matching_data)
