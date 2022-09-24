@@ -10,8 +10,8 @@ import os
 
 #pytesseract.pytesseract.tesseract_cmd = r'C:\Users\vikram\AppData\Local\Programs\Tesseract-OCR\tesseract.exe'
 
-app = Flask(__name__)
-api = Api(app)
+application = Flask(__name__)
+api = Api(application)
 
 class MainApp(Resource):
     def post(self):
@@ -102,4 +102,4 @@ class MainApp(Resource):
 api.add_resource(MainApp, '/')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    application.run(debug=True)

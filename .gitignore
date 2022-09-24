@@ -45,3 +45,8 @@ docs/_build
 #Eclipse/Aptana
 .project
 .pydevproject
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
